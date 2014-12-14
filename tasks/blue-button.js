@@ -20,7 +20,7 @@ module.exports = function(grunt) {
         			var valid = bbm.validator.validateDocumentModel(result);
 			        if (!valid) {
 			        	var errs = JSON.stringify(bb.validator.getLastError(), null, 4);
-            			grunt.fail.warn("Validation failed for " + src + ": \n", errs);
+            			grunt.fail.warn("Validation failed for " + src + ": \n" + errs);
         			}
         		}
         		var baseName = path.basename(src, path.extname(src));
