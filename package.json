@@ -1,12 +1,13 @@
 {
   "name": "grunt-blue-button",
-  "version": "1.4.0-beta.1",
+  "version": "1.4.0-beta.2",
   "description": "Grunt Blue Button Parser Task",
   "main": "/tasks/blue-button.js",
   "author": "Dmitry Kachaev <dmitry@amida-tech.com>",
   "dependencies": {
     "blue-button": "^1.4.0",
-    "blue-button-model": "^1.3.0"
+    "blue-button-model": "^1.3.0",
+    "blue-button-generate": "^1.3.0"
   },
   "repository": {
     "type": "git",
