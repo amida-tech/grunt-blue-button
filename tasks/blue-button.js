@@ -25,7 +25,7 @@ module.exports = function(grunt) {
         		if (options.validate) {
         			var valid = bbm.validator.validateDocumentModel(result);
 			        if (!valid) {
-			        	var errs = JSON.stringify(bb.validator.getLastError(), null, 4);
+			        	var errs = JSON.stringify(bbm.validator.getLastError(), null, 4);
             			grunt.fail.warn("Validation failed for " + src + ": \n" + errs);
         			}
         		}
@@ -58,8 +58,26 @@ module.exports = function(grunt) {
 	});
 
 	grunt.registerMultiTask("blue-button-jsondiff", "Compares files in directories.", function() {
+		var deleteIgnoredProperties = function pathToJSON(json, tbIgnored) {
+			tbIgnored.forEach(function(propPath) {
+				var props = propPath.split('.');
+				var parentObject = json;
+				for (var i=0; i<props.length-1; ++i) {
+					parentObject = parentObject[props[0]];
+					if ((! parentObject) || (typeof parentObject !== 'object')) {
+						parentObject = null;
+						break;
+					}
+				}
+				if (parentObject) {
+					delete parentObject[props[props.length-1]];
+				}
+			});
+		};
+
 		var options = this.options({
-			postfix: ""
+			postfix: "",
+			ignore: []
 		});
 		this.files.forEach(function(filePair) {
 			var dest = filePair.dest;
@@ -83,6 +101,10 @@ module.exports = function(grunt) {
 					var path0 = path.join(filePair.src[0], fileName);
 					var json0 = grunt.file.readJSON(path0);
 					var json1 = grunt.file.readJSON(path1);
+					if (options.ignore.length > 0) {
+						deleteIgnoredProperties(json0, options.ignore);
+						deleteIgnoredProperties(json1, options.ignore);
+					}
 					var diff = jsondiffpatch.diff(json0, json1);
 					if (diff) {
 						diffResults[fileName] = {success: false, diff: diff};
